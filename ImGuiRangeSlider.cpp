@@ -6,13 +6,23 @@ namespace ImGui
 	static float bar_width = 3;
 
 	template <class t>
+	void keepInRange(t& val, const t& min, const t& max)
+	{
+		if (val > max)
+			val = max;
+		else if (val < min)
+			val = min;
+	}
+
+	template <class t>
 	bool drawGrabber(const char* id, ImVec2 &pos, t& input, const t& min, const t& max, float width, float height, int idnum)
 	{
 		ImGuiWindow* win = GetCurrentWindow();
 		const ImU32 inactive_color = ColorConvertFloat4ToU32(GImGui->Style.Colors[ImGuiCol_SliderGrab]);
 		const ImU32 active_color = ColorConvertFloat4ToU32(GImGui->Style.Colors[ImGuiCol_SliderGrabActive]);
 		float scale = max / width;
-		bool changed, hovered = false;
+		bool changed = false;
+		bool hovered = false;
 		int current_draw_bar = input / scale;
 		hovered = false;
 		SetCursorScreenPos({ pos.x + current_draw_bar - (width / max), pos.y });
@@ -29,10 +39,7 @@ namespace ImGui
 		{
 
 			input += GetIO().MouseDelta.x * scale;
-			if (input > max)
-				input = max;
-			if (input < min)
-				input = min;
+			keepInRange(input, min, max);
 			changed = hovered = true;
 		}
 		win->DrawList->AddRectFilled({ pos.x + current_draw_bar, pos.y }, { pos.x + current_draw_bar + bar_width, pos.y + height }, IsItemActive() || IsItemHovered() || hovered ? active_color : inactive_color);
@@ -52,9 +59,6 @@ namespace ImGui
 		float width = CalcItemWidth() - (button_size + style.ItemInnerSpacing.x) * 2;
 		float height = ImGui::GetTextLineHeightWithSpacing();
 		bool changed = false;
-		bool hovered = false;
-		bool active = false;
-		
 		SetNextItemWidth(ImMax(1.0f, width));
 		ImVec2 pos = win->DC.CursorPos;
 		ImVec2 end = { pos.x+width, pos.y + height };
@@ -62,9 +66,9 @@ namespace ImGui
 		win->DrawList->AddRectFilled(pos, end, ColorConvertFloat4ToU32(GImGui->Style.Colors[ImGuiCol_FrameBg]));
 		win->DrawList->AddRectFilled({ pos.x + low /  scale, pos.y }, { pos.x + high / scale, pos.y + height }, line_color); //bar between the 2 grabbers
 		if (drawGrabber(id, pos, low, min, max, width, height, 0))
-			changed = hovered = true;
+			changed = true;
 		if (drawGrabber(id, pos, high, min, max, width, height, 1))
-			changed = hovered = true;
+			changed = true;
 		if (low >= high)
 			std::swap(low, high);
 		SetCursorScreenPos({ pos.x + width + style.ItemInnerSpacing.x,pos.y-1 });
@@ -76,45 +80,34 @@ namespace ImGui
 		ImGui::SetNextItemWidth(40);
 		if (ImGui::InputInt("##Val1", &low, 0))
 		{
-			if (low > max)
-				low = max;
-			if (low < min)
-				low = min;
+			keepInRange(low, min, max);
 			r = true;
 		}
 		ImGui::SameLine(0);
 		ImGui::SetNextItemWidth(40);
 		if (ImGui::InputInt("##Val2", &high, 0))
 		{
-			if (high > max)
-				high = max;
-			if (high < min)
-				high = min;
+			keepInRange(high, min, max);
 			r = true;
 		}
 
 		return r;
 	}
+	
 	bool RangeSliderFloat(const char* id, const float& min, const float& max, float& low, float& high)
 	{
 		bool r =  RangeSlider<float>(id, min, max, low, high);
 		ImGui::SetNextItemWidth(60);
 		if (ImGui::InputFloat("##Val1", &low, 0))
 		{
-			if (low > max)
-				low = max;
-			if (low < min)
-				low = min;
+			keepInRange(low, min, max);
 			r = true;
 		}
 		ImGui::SameLine(0);
 		ImGui::SetNextItemWidth(60);
 		if (ImGui::InputFloat("##Val2", &high, 0))
 		{
-			if (high > max)
-				high = max;
-			if (high < min)
-				high = min;
+			keepInRange(high, min, max);
 			r = true;
 		}
 		return r;
