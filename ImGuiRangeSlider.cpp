@@ -79,18 +79,13 @@ namespace ImGui
 		bool r = RangeSlider<int>(id, min, max, low, high);
 		ImGui::SetNextItemWidth(40);
 		if (ImGui::InputInt("##Val1", &low, 0))
-		{
-			keepInRange(low, min, max);
 			r = true;
-		}
 		ImGui::SameLine(0);
 		ImGui::SetNextItemWidth(40);
 		if (ImGui::InputInt("##Val2", &high, 0))
-		{
-			keepInRange(high, min, max);
 			r = true;
-		}
-
+		keepInRange(low, min, max);
+		keepInRange(high, min, max);
 		return r;
 	}
 	
@@ -99,17 +94,14 @@ namespace ImGui
 		bool r =  RangeSlider<float>(id, min, max, low, high);
 		ImGui::SetNextItemWidth(60);
 		if (ImGui::InputFloat("##Val1", &low, 0))
-		{
-			keepInRange(low, min, max);
 			r = true;
-		}
 		ImGui::SameLine(0);
 		ImGui::SetNextItemWidth(60);
 		if (ImGui::InputFloat("##Val2", &high, 0))
-		{
 			keepInRange(high, min, max);
-			r = true;
-		}
+
+		keepInRange(low, min, max);
+		keepInRange(high, min, max);
 		return r;
 	}
 }
