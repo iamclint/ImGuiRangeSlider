@@ -5,13 +5,9 @@ namespace ImGui
 	
 	static float bar_width = 3;
 
-	template <class t>
-	void keepInRange(t& val, const t& min, const t& max)
-	{
-		if (val > max)
-			val = max;
-		else if (val < min)
-			val = min;
+	template <typename T>
+	void clip(T& n, const T& lower, const T& upper) {
+		n= std::max(lower, std::min(n, upper));
 	}
 
 	template <class t>
@@ -39,7 +35,7 @@ namespace ImGui
 		{
 
 			input += GetIO().MouseDelta.x * scale;
-			keepInRange(input, min, max);
+			clip(input, min, max);
 			changed = hovered = true;
 		}
 		win->DrawList->AddRectFilled({ pos.x + current_draw_bar, pos.y }, { pos.x + current_draw_bar + bar_width, pos.y + height }, IsItemActive() || IsItemHovered() || hovered ? active_color : inactive_color);
@@ -84,8 +80,8 @@ namespace ImGui
 		ImGui::SetNextItemWidth(40);
 		if (ImGui::InputInt("##Val2", &high, 0))
 			r = true;
-		keepInRange(low, min, max);
-		keepInRange(high, min, max);
+		clip(low, min, max);
+		clip(high, min, max);
 		return r;
 	}
 	
@@ -98,10 +94,10 @@ namespace ImGui
 		ImGui::SameLine(0);
 		ImGui::SetNextItemWidth(60);
 		if (ImGui::InputFloat("##Val2", &high, 0))
-			keepInRange(high, min, max);
+			clip(high, min, max);
 
-		keepInRange(low, min, max);
-		keepInRange(high, min, max);
+		clip(low, min, max);
+		clip(high, min, max);
 		return r;
 	}
 }
