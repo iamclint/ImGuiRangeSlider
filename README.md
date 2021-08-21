@@ -18,3 +18,6 @@ A range slider chooser for imgui
     
     basic sample usage
     </pre>
+![range selector](https://user-images.githubusercontent.com/16273696/130307924-c78bb58e-19c0-4b39-a547-1c1d003efa09.png)
+
+    
