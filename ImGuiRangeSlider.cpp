@@ -16,25 +16,25 @@ namespace ImGui
 		ImGuiWindow* win = GetCurrentWindow();
 		const ImU32 inactive_color = ColorConvertFloat4ToU32(GImGui->Style.Colors[ImGuiCol_SliderGrab]);
 		const ImU32 active_color = ColorConvertFloat4ToU32(GImGui->Style.Colors[ImGuiCol_SliderGrabActive]);
+		
 		float scale = max / width;
 		bool changed = false;
 		bool hovered = false;
 		int current_draw_bar = input / scale;
+		static float previous_delta;
 		hovered = false;
-		SetCursorScreenPos({ pos.x + current_draw_bar - (width / max), pos.y });
+		SetCursorScreenPos({ pos.x + current_draw_bar /*- (width / max)*/, pos.y });
 		std::string nid = id + std::to_string(idnum);
 		PushID(nid.c_str());
 		ImGui::InvisibleButton(nid.c_str(), { bar_width, height });
 		if (IsItemActive() || IsItemHovered())
 		{
-			std::string ttip = std::to_string(input);
-			ImGui::SetTooltip(ttip.c_str());
+			ImGui::SetTooltip(std::to_string(input).c_str());
 			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
 		}
 		if (IsItemActive() && IsMouseDragging(0))
 		{
-
-			input += GetIO().MouseDelta.x * scale;
+			input += (GetIO().MousePos.x - (pos.x + current_draw_bar)) * scale;
 			clip(input, min, max);
 			changed = hovered = true;
 		}
