@@ -1,5 +1,5 @@
 # ImGuiRangeSlider
-A range slider chooser for imgui
+A range slider for imgui
 <pre>
     int max = 10000;
     int min = 1;
