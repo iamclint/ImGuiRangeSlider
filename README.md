@@ -1,5 +1,6 @@
 # ImGuiRangeSlider
-A range slider for imgui
+A range slider for Dear ImGui
+https://github.com/ocornut/imgui
 <pre>
     int max = 10000;
     int min = 1;
